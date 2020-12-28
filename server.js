@@ -1,4 +1,7 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+const express = require('express-session');
+
 const path = require('path');
 const db = require('./Helpers/MySQL');
 
@@ -16,6 +19,20 @@ db.connect(err => {
   // Routers
   app.use('/', require('./Routers/IndexRouter'));
 });
+
+// Session
+app.use(session({
+  secret: 'secret-key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+      maxAge: 1000 * 60 * 60 * 2
+  }
+}));
+
+// Body Parser
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 // Public Folder
 app.use('/Public', express.static(path.join(__dirname, 'public')));
